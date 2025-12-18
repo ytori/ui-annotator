@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en" class="dark" style="color-scheme: dark">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <title>UI Annotator</title>
+
+    <!-- SEO Meta Tags -->
+    <meta name="description" content="Annotate UI screenshots with semantic labels to generate JSON input for AI agent UI implementation" />
+    <meta name="robots" content="index, follow" />
+    <meta name="author" content="UI Annotator" />
+
+    <!-- Open Graph -->
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="UI Annotator" />
+    <meta property="og:description" content="Annotate UI screenshots with semantic labels to generate JSON input for AI agent UI implementation" />
+    <meta property="og:site_name" content="UI Annotator" />
+    <meta property="og:image" content="%VITE_SITE_URL%/og-image.png" />
+    <meta property="og:url" content="%VITE_SITE_URL%" />
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="UI Annotator" />
+    <meta name="twitter:description" content="Annotate UI screenshots with semantic labels to generate JSON input for AI agent UI implementation" />
+    <meta name="twitter:image" content="%VITE_SITE_URL%/og-image.png" />
+
+    <!-- Canonical -->
+    <link rel="canonical" href="%VITE_SITE_URL%" />
+
+    <!-- Theme -->
+    <meta name="theme-color" content="#09090b" />
+    <meta name="color-scheme" content="dark light" />
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+
+    <!-- FOUC防止: テーマをレンダリング前に適用 -->
+    <script>
+      (() => {
+        const storageKey = 'ui-annotator-theme';
+        const theme = localStorage.getItem(storageKey) || 'dark';
+        const isDark = theme === 'dark' || (theme === 'system' && window.matchMedia('(prefers-color-scheme: dark)').matches);
+        document.documentElement.classList.toggle('dark', isDark);
+        document.documentElement.style.colorScheme = isDark ? 'dark' : 'light';
+      })();
+    </script>
+    <!-- Critical CSS: 背景色を即座に適用 -->
+    <style>
+      html { background-color: #171717; }
+      html:not(.dark) { background-color: #f5f5f5; }
+    </style>
+  </head>
+
+  <body>
+    <div id="app"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>
