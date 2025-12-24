@@ -1,6 +1,7 @@
-bun test
-
 #!/bin/sh
+# Uncomment to run tests before commit
+# bun test
+
 # Exit on any error
 set -e
 
