@@ -63,7 +63,7 @@ export function ImageUploader({
   }, []);
 
   return (
-    <div className="flex h-full w-full items-center justify-center pb-16">
+    <div className="flex h-full w-full items-center justify-center py-8">
       <div className="flex w-full max-w-lg flex-col items-center px-6">
         {/* Logo */}
         <AppLogoWithText className="mb-5 scale-110" />

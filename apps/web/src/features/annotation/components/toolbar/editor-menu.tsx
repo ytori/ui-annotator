@@ -21,7 +21,7 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
-import { Button } from "@/components/ui/button";
+import { Button, buttonVariants } from "@/components/ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -61,14 +61,14 @@ export function EditorMenu({
           <AlertDialogHeader>
             <AlertDialogTitle>Clear Project</AlertDialogTitle>
             <AlertDialogDescription>
-              Are you sure you want to clear the current project? All
-              annotations will be lost.
+              Are you sure you want to clear the current project? Unsaved
+              changes will be lost.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogCancel>Cancel</AlertDialogCancel>
             <AlertDialogAction
-              className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+              className={buttonVariants({ variant: "destructive" })}
               onClick={handleClear}
             >
               Clear
