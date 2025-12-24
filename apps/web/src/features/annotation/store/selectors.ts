@@ -39,3 +39,11 @@ export const selectFirstSelectedElement = (state: AnnotationState) => {
 /** Select all selected IDs */
 export const selectSelectedIds = (state: AnnotationState) =>
   state.selection.selectedIds;
+
+// ============================================
+// Viewport Selectors
+// ============================================
+
+/** Select container size */
+export const selectContainerSize = (state: AnnotationState) =>
+  state.containerSize;

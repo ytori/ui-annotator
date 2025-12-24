@@ -3,6 +3,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { createBBox } from "@/lib/geometry";
 import { useCanvasInteraction } from "../../hooks/use-canvas-interaction";
 import {
+  selectContainerSize,
   selectImage,
   selectProject,
   useAnnotationStore,
@@ -70,10 +71,10 @@ export function CanvasContainer() {
   const containerRef = useRef<HTMLDivElement>(null);
   const stageRef = useRef<Konva.Stage>(null);
 
-  // Store state
+  // Store state (using dedicated selectors for performance)
   const project = useAnnotationStore(selectProject);
   const image = useAnnotationStore(selectImage);
-  const containerSize = useAnnotationStore((state) => state.containerSize);
+  const containerSize = useAnnotationStore(selectContainerSize);
 
   // Store actions
   const setContainerSize = useAnnotationStore(

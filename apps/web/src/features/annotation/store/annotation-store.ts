@@ -271,7 +271,7 @@ export const useAnnotationStore = create<AnnotationStore>()(
 
           set((s) => {
             // Deep copy elements for clipboard
-            s.clipboard.elements = JSON.parse(JSON.stringify(selectedElements));
+            s.clipboard.elements = structuredClone(selectedElements);
           });
         },
 
@@ -318,7 +318,7 @@ export const useAnnotationStore = create<AnnotationStore>()(
             s.elements.push(...newElements);
             s.selection.selectedIds = newIds;
             // Update clipboard with new positions for subsequent paste
-            s.clipboard.elements = JSON.parse(JSON.stringify(newElements));
+            s.clipboard.elements = structuredClone(newElements);
             syncElementsToProject(s);
           });
         },
@@ -604,16 +604,28 @@ export const useAnnotationStore = create<AnnotationStore>()(
  * This handles the page reload scenario where the project is restored
  * from localStorage but the image (HTMLImageElement) cannot be serialized.
  * The store self-heals by loading the image from the project's imageUrl.
+ *
+ * Tracks previous imageUrl to only trigger on actual changes (performance optimization).
  */
+let prevImageUrl: string | null = null;
 let isLoadingImage = false;
 useAnnotationStore.subscribe((state) => {
-  // Skip if no project, no imageUrl, image already exists, or already loading
-  if (!state.project?.imageUrl || state.image || isLoadingImage) {
+  const currentImageUrl = state.project?.imageUrl ?? null;
+
+  // Skip if imageUrl hasn't changed (performance: avoid running on every state update)
+  if (currentImageUrl === prevImageUrl) {
     return;
   }
 
+  // Skip if no imageUrl, image already exists, or already loading
+  if (!currentImageUrl || state.image || isLoadingImage) {
+    prevImageUrl = currentImageUrl;
+    return;
+  }
+
+  prevImageUrl = currentImageUrl;
   isLoadingImage = true;
-  loadImageFromUrl(state.project.imageUrl)
+  loadImageFromUrl(currentImageUrl)
     .then((loadedImage) => {
       useAnnotationStore.setState({ image: loadedImage });
     })
