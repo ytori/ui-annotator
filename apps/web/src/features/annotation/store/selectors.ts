@@ -20,16 +20,16 @@ export const selectImage = (state: AnnotationState) => state.image;
 
 /** Select all elements */
 export const selectElements = (state: AnnotationState) =>
-	state.elements.length > 0 ? state.elements : EMPTY_ELEMENTS;
+  state.elements.length > 0 ? state.elements : EMPTY_ELEMENTS;
 
 /** Select first selected element */
 export const selectFirstSelectedElement = (state: AnnotationState) => {
-	const { elements, selection } = state;
-	if (elements.length === 0 || selection.selectedIds.length === 0) {
-		return null;
-	}
-	const id = selection.selectedIds[0];
-	return elements.find((e) => e.id === id) ?? null;
+  const { elements, selection } = state;
+  if (elements.length === 0 || selection.selectedIds.length === 0) {
+    return null;
+  }
+  const id = selection.selectedIds[0];
+  return elements.find((e) => e.id === id) ?? null;
 };
 
 // ============================================
@@ -38,4 +38,4 @@ export const selectFirstSelectedElement = (state: AnnotationState) => {
 
 /** Select all selected IDs */
 export const selectSelectedIds = (state: AnnotationState) =>
-	state.selection.selectedIds;
+  state.selection.selectedIds;

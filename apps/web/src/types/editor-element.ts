@@ -15,24 +15,24 @@ import { type BBox, bboxSchema } from "./geometry";
 // ============================================
 
 export const ELEMENT_COLOR_VALUES = [
-	"blue",
-	"sky",
-	"cyan",
-	"teal",
-	"green",
-	"lime",
-	"yellow",
-	"amber",
-	"orange",
-	"red",
-	"rose",
-	"pink",
-	"fuchsia",
-	"purple",
-	"violet",
-	"indigo",
-	"slate",
-	"gray",
+  "blue",
+  "sky",
+  "cyan",
+  "teal",
+  "green",
+  "lime",
+  "yellow",
+  "amber",
+  "orange",
+  "red",
+  "rose",
+  "pink",
+  "fuchsia",
+  "purple",
+  "violet",
+  "indigo",
+  "slate",
+  "gray",
 ] as const;
 
 export const elementColorSchema = z.enum(ELEMENT_COLOR_VALUES);
@@ -48,19 +48,19 @@ export type ElementColor = z.infer<typeof elementColorSchema>;
  * Extends the base Element with color, displayOrder, timestamps.
  */
 export const editorElementSchema = z.object({
-	// Core fields (same as Element)
-	id: z.string(),
-	label: z.string(),
-	bbox: bboxSchema,
-	component: componentSpecSchema.optional(),
-	notes: z.string().optional(),
-	// Editor-specific fields
-	/** Auto-assigned serial number at creation time (immutable, for display fallback) */
-	serialNumber: z.number().int().positive(),
-	color: elementColorSchema.optional(),
-	displayOrder: z.number().int().nonnegative(),
-	createdAt: z.iso.datetime(),
-	updatedAt: z.iso.datetime(),
+  // Core fields (same as Element)
+  id: z.string(),
+  label: z.string(),
+  bbox: bboxSchema,
+  component: componentSpecSchema.optional(),
+  notes: z.string().optional(),
+  // Editor-specific fields
+  /** Auto-assigned serial number at creation time (immutable, for display fallback) */
+  serialNumber: z.number().int().positive(),
+  color: elementColorSchema.optional(),
+  displayOrder: z.number().int().nonnegative(),
+  createdAt: z.iso.datetime(),
+  updatedAt: z.iso.datetime(),
 });
 
 export type EditorElement = z.infer<typeof editorElementSchema>;
@@ -73,12 +73,12 @@ export type EditorElement = z.infer<typeof editorElementSchema>;
  * Partial update for an editor element.
  */
 export interface ElementUpdate {
-	label?: string;
-	bbox?: BBox;
-	component?: ComponentSpec | null;
-	notes?: string;
-	color?: ElementColor;
-	displayOrder?: number;
+  label?: string;
+  bbox?: BBox;
+  component?: ComponentSpec | null;
+  notes?: string;
+  color?: ElementColor;
+  displayOrder?: number;
 }
 
 // ============================================
@@ -90,20 +90,20 @@ export interface ElementUpdate {
  * Uses serialNumber as label fallback if label is empty.
  */
 export function toElement(editorElement: EditorElement): Element {
-	return {
-		id: editorElement.id,
-		label: getDisplayLabel(editorElement),
-		bbox: editorElement.bbox,
-		component: editorElement.component,
-		notes: editorElement.notes,
-	};
+  return {
+    id: editorElement.id,
+    label: getDisplayLabel(editorElement),
+    bbox: editorElement.bbox,
+    component: editorElement.component,
+    notes: editorElement.notes,
+  };
 }
 
 /**
  * Convert EditorElement array to Element array.
  */
 export function toElements(editorElements: EditorElement[]): Element[] {
-	return editorElements.map(toElement);
+  return editorElements.map(toElement);
 }
 
 /**
@@ -111,5 +111,5 @@ export function toElements(editorElements: EditorElement[]): Element[] {
  * Returns user-defined label if set, otherwise falls back to #serialNumber.
  */
 export function getDisplayLabel(element: EditorElement): string {
-	return element.label || `#${element.serialNumber}`;
+  return element.label || `#${element.serialNumber}`;
 }

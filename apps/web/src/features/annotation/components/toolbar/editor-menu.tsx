@@ -1,131 +1,131 @@
 import {
-	Component,
-	FileUp,
-	FolderOpen,
-	Menu,
-	Save,
-	Trash2,
+  Component,
+  FileUp,
+  FolderOpen,
+  Menu,
+  Save,
+  Trash2,
 } from "lucide-react";
 import { useState } from "react";
 import {
-	GithubMenuItems,
-	ThemeMenuItems,
+  GithubMenuItems,
+  ThemeMenuItems,
 } from "@/components/common/menu-items";
 import {
-	AlertDialog,
-	AlertDialogAction,
-	AlertDialogCancel,
-	AlertDialogContent,
-	AlertDialogDescription,
-	AlertDialogFooter,
-	AlertDialogHeader,
-	AlertDialogTitle,
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
 import {
-	DropdownMenu,
-	DropdownMenuContent,
-	DropdownMenuItem,
-	DropdownMenuSeparator,
-	DropdownMenuTrigger,
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 
 export interface EditorMenuProps {
-	hasProject: boolean;
-	onOpen: () => void;
-	onSave?: () => void;
-	onExport?: () => void;
-	onImportComponentLibrary?: () => void;
-	onClear: () => void;
+  hasProject: boolean;
+  onOpen: () => void;
+  onSave?: () => void;
+  onExport?: () => void;
+  onImportComponentLibrary?: () => void;
+  onClear: () => void;
 }
 
 export function EditorMenu({
-	hasProject,
-	onOpen,
-	onSave,
-	onExport,
-	onImportComponentLibrary,
-	onClear,
+  hasProject,
+  onOpen,
+  onSave,
+  onExport,
+  onImportComponentLibrary,
+  onClear,
 }: EditorMenuProps) {
-	const [showClearDialog, setShowClearDialog] = useState(false);
+  const [showClearDialog, setShowClearDialog] = useState(false);
 
-	const handleClear = () => {
-		setShowClearDialog(false);
-		onClear();
-	};
+  const handleClear = () => {
+    setShowClearDialog(false);
+    onClear();
+  };
 
-	return (
-		<>
-			<AlertDialog open={showClearDialog} onOpenChange={setShowClearDialog}>
-				<AlertDialogContent>
-					<AlertDialogHeader>
-						<AlertDialogTitle>Clear Project</AlertDialogTitle>
-						<AlertDialogDescription>
-							Are you sure you want to clear the current project? All
-							annotations will be lost.
-						</AlertDialogDescription>
-					</AlertDialogHeader>
-					<AlertDialogFooter>
-						<AlertDialogCancel>Cancel</AlertDialogCancel>
-						<AlertDialogAction
-							onClick={handleClear}
-							className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
-						>
-							Clear
-						</AlertDialogAction>
-					</AlertDialogFooter>
-				</AlertDialogContent>
-			</AlertDialog>
-			<DropdownMenu>
-				<DropdownMenuTrigger asChild>
-					<Button variant="ghost" size="icon" className="h-8 w-8">
-						<Menu className="h-5 w-5" />
-					</Button>
-				</DropdownMenuTrigger>
-				<DropdownMenuContent align="end" className="w-48">
-					{/* Open/Save */}
-					<DropdownMenuItem onClick={onOpen}>
-						<FolderOpen className="mr-2 h-4 w-4" />
-						Open
-					</DropdownMenuItem>
-					{hasProject && (
-						<DropdownMenuItem onClick={onSave}>
-							<Save className="mr-2 h-4 w-4" />
-							Save As
-						</DropdownMenuItem>
-					)}
-					{/* Export for AI */}
-					{hasProject && (
-						<>
-							<DropdownMenuSeparator />
-							<DropdownMenuItem onClick={onExport}>
-								<FileUp className="mr-2 h-4 w-4" />
-								Export for AI
-							</DropdownMenuItem>
-						</>
-					)}
-					{/* Components */}
-					<DropdownMenuSeparator />
-					<DropdownMenuItem onClick={onImportComponentLibrary}>
-						<Component className="mr-2 h-4 w-4" />
-						Components
-					</DropdownMenuItem>
-					{hasProject && (
-						<>
-							<DropdownMenuSeparator />
-							<DropdownMenuItem
-								onClick={() => setShowClearDialog(true)}
-								className="text-destructive focus:text-destructive"
-							>
-								<Trash2 className="mr-2 h-4 w-4" />
-								Clear Project
-							</DropdownMenuItem>
-						</>
-					)}
-					<ThemeMenuItems />
-					<GithubMenuItems />
-				</DropdownMenuContent>
-			</DropdownMenu>
-		</>
-	);
+  return (
+    <>
+      <AlertDialog onOpenChange={setShowClearDialog} open={showClearDialog}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Clear Project</AlertDialogTitle>
+            <AlertDialogDescription>
+              Are you sure you want to clear the current project? All
+              annotations will be lost.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogAction
+              className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+              onClick={handleClear}
+            >
+              Clear
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+      <DropdownMenu>
+        <DropdownMenuTrigger asChild>
+          <Button className="h-8 w-8" size="icon" variant="ghost">
+            <Menu className="h-5 w-5" />
+          </Button>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent align="end" className="w-48">
+          {/* Open/Save */}
+          <DropdownMenuItem onClick={onOpen}>
+            <FolderOpen className="mr-2 h-4 w-4" />
+            Open
+          </DropdownMenuItem>
+          {hasProject && (
+            <DropdownMenuItem onClick={onSave}>
+              <Save className="mr-2 h-4 w-4" />
+              Save As
+            </DropdownMenuItem>
+          )}
+          {/* Export for AI */}
+          {hasProject && (
+            <>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem onClick={onExport}>
+                <FileUp className="mr-2 h-4 w-4" />
+                Export for AI
+              </DropdownMenuItem>
+            </>
+          )}
+          {/* Components */}
+          <DropdownMenuSeparator />
+          <DropdownMenuItem onClick={onImportComponentLibrary}>
+            <Component className="mr-2 h-4 w-4" />
+            Components
+          </DropdownMenuItem>
+          {hasProject && (
+            <>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem
+                className="text-destructive focus:text-destructive"
+                onClick={() => setShowClearDialog(true)}
+              >
+                <Trash2 className="mr-2 h-4 w-4" />
+                Clear Project
+              </DropdownMenuItem>
+            </>
+          )}
+          <ThemeMenuItems />
+          <GithubMenuItems />
+        </DropdownMenuContent>
+      </DropdownMenu>
+    </>
+  );
 }

@@ -1,8 +1,8 @@
 import { type ReactNode, type TouchEvent, useCallback } from "react";
 
 interface ScrollableDrawerContentProps {
-	children: ReactNode;
-	className?: string;
+  children: ReactNode;
+  className?: string;
 }
 
 /**
@@ -13,21 +13,21 @@ interface ScrollableDrawerContentProps {
  * within the drawer content.
  */
 export function ScrollableDrawerContent({
-	children,
-	className = "",
+  children,
+  className = "",
 }: ScrollableDrawerContentProps) {
-	const handleTouch = useCallback((e: TouchEvent<HTMLDivElement>) => {
-		e.stopPropagation();
-	}, []);
+  const handleTouch = useCallback((e: TouchEvent<HTMLDivElement>) => {
+    e.stopPropagation();
+  }, []);
 
-	return (
-		<div
-			className={`flex-1 overflow-y-auto pb-[env(safe-area-inset-bottom)] ${className}`}
-			style={{ touchAction: "pan-y" }}
-			onTouchStart={handleTouch}
-			onTouchMove={handleTouch}
-		>
-			{children}
-		</div>
-	);
+  return (
+    <div
+      className={`flex-1 overflow-y-auto pb-[env(safe-area-inset-bottom)] ${className}`}
+      onTouchMove={handleTouch}
+      onTouchStart={handleTouch}
+      style={{ touchAction: "pan-y" }}
+    >
+      {children}
+    </div>
+  );
 }

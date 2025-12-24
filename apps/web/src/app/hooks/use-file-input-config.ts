@@ -6,8 +6,8 @@
 import { getAcceptPattern, isAcceptableFile } from "@/features/storage";
 
 export function useFileInputConfig() {
-	return {
-		acceptPattern: getAcceptPattern(),
-		isAcceptableFile,
-	};
+  return {
+    acceptPattern: getAcceptPattern(),
+    isAcceptableFile,
+  };
 }

@@ -25,8 +25,8 @@ export { ImageUploader } from "./components/image-uploader";
 export { LayerPanel } from "./components/panels/layer-panel";
 export { LayerSheet } from "./components/panels/layer-sheet";
 export {
-	type ComponentEditorProps,
-	PropertiesPanel,
+  type ComponentEditorProps,
+  PropertiesPanel,
 } from "./components/panels/properties-panel";
 export { PropertiesSheet } from "./components/panels/properties-sheet";
 export { BottomToolbar } from "./components/toolbar/bottom-toolbar";
@@ -37,10 +37,10 @@ export { EditorHeader } from "./components/toolbar/editor-header";
 // ============================================
 
 export {
-	selectElements,
-	selectProject,
-	selectSelectedIds,
-	useAnnotationStore,
+  selectElements,
+  selectProject,
+  selectSelectedIds,
+  useAnnotationStore,
 } from "./store";
 
 // ============================================

@@ -22,17 +22,17 @@ const IconResolverContext = createContext<IconResolver>(defaultIconResolver);
  * Provider for icon resolver
  */
 export function IconResolverProvider({
-	resolver,
-	children,
+  resolver,
+  children,
 }: {
-	resolver: IconResolver;
-	children: ReactNode;
+  resolver: IconResolver;
+  children: ReactNode;
 }) {
-	return (
-		<IconResolverContext.Provider value={resolver}>
-			{children}
-		</IconResolverContext.Provider>
-	);
+  return (
+    <IconResolverContext.Provider value={resolver}>
+      {children}
+    </IconResolverContext.Provider>
+  );
 }
 
 /**
@@ -40,7 +40,7 @@ export function IconResolverProvider({
  * @returns Function that takes a component name and returns an icon
  */
 export function useIconResolver(): IconResolver {
-	return useContext(IconResolverContext);
+  return useContext(IconResolverContext);
 }
 
 /**
@@ -49,6 +49,6 @@ export function useIconResolver(): IconResolver {
  * @returns The Lucide icon component
  */
 function _useComponentIcon(componentName?: string): LucideIcon {
-	const resolver = useIconResolver();
-	return resolver(componentName);
+  const resolver = useIconResolver();
+  return resolver(componentName);
 }

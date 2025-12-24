@@ -11,22 +11,22 @@ import type { Result } from "@/lib/error";
  * Serialized project data (format-agnostic)
  */
 export interface SerializedProject {
-	/** Project metadata as JSON string */
-	projectJson: string;
-	/** Image as Data URL (preserves original format) */
-	imageDataUrl: string;
+  /** Project metadata as JSON string */
+  projectJson: string;
+  /** Image as Data URL (preserves original format) */
+  imageDataUrl: string;
 }
 
 /**
  * Result of encoding a project
  */
 export interface EncodeResult {
-	/** Encoded data as Uint8Array */
-	data: Uint8Array;
-	/** MIME type of the encoded data */
-	mimeType: string;
-	/** Suggested file extension (without dot) */
-	extension: string;
+  /** Encoded data as Uint8Array */
+  data: Uint8Array;
+  /** MIME type of the encoded data */
+  mimeType: string;
+  /** Suggested file extension (without dot) */
+  extension: string;
 }
 
 /**
@@ -37,30 +37,30 @@ export interface EncodeResult {
  * only about SerializedProject (JSON + image).
  */
 export interface StorageCodec {
-	/** Unique identifier for this codec */
-	readonly id: string;
+  /** Unique identifier for this codec */
+  readonly id: string;
 
-	/** Human-readable name */
-	readonly name: string;
+  /** Human-readable name */
+  readonly name: string;
 
-	/** File extension (without dot) */
-	readonly extension: string;
+  /** File extension (without dot) */
+  readonly extension: string;
 
-	/** MIME type */
-	readonly mimeType: string;
+  /** MIME type */
+  readonly mimeType: string;
 
-	/**
-	 * Check if a buffer is in this codec's format
-	 */
-	canDecode(buffer: ArrayBuffer): boolean;
+  /**
+   * Check if a buffer is in this codec's format
+   */
+  canDecode(buffer: ArrayBuffer): boolean;
 
-	/**
-	 * Encode serialized project data to this format
-	 */
-	encode(data: SerializedProject): Promise<Result<EncodeResult, string>>;
+  /**
+   * Encode serialized project data to this format
+   */
+  encode(data: SerializedProject): Promise<Result<EncodeResult, string>>;
 
-	/**
-	 * Decode data from this format to serialized project
-	 */
-	decode(buffer: ArrayBuffer): Promise<Result<SerializedProject, string>>;
+  /**
+   * Decode data from this format to serialized project
+   */
+  decode(buffer: ArrayBuffer): Promise<Result<SerializedProject, string>>;
 }

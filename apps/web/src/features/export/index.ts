@@ -21,12 +21,12 @@ exportPluginManager.register(jsonExporter);
 /**
  * Download data in a specific format.
  */
-export async function downloadData(
-	formatId: string,
-	input: ExportInput,
-	options?: ExportOptions,
+export function downloadData(
+  formatId: string,
+  input: ExportInput,
+  options?: ExportOptions
 ): Promise<void> {
-	return exportPluginManager.download(formatId, input, options);
+  return exportPluginManager.download(formatId, input, options);
 }
 
 export { ExportDialog } from "./components/export-dialog";

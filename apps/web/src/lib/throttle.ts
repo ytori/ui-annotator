@@ -8,10 +8,10 @@
  * Throttle options
  */
 export interface ThrottleOptions {
-	/** Call on the leading edge (default: true) */
-	leading?: boolean;
-	/** Call on the trailing edge (default: true) */
-	trailing?: boolean;
+  /** Call on the leading edge (default: true) */
+  leading?: boolean;
+  /** Call on the trailing edge (default: true) */
+  trailing?: boolean;
 }
 
 /**
@@ -31,61 +31,61 @@ export interface ThrottleOptions {
  */
 // biome-ignore lint/suspicious/noExplicitAny: Generic function requires any for flexibility
 export function throttle<T extends (...args: any[]) => any>(
-	fn: T,
-	wait: number,
-	options: ThrottleOptions = {},
+  fn: T,
+  wait: number,
+  options: ThrottleOptions = {}
 ): T {
-	const { leading = true, trailing = true } = options;
+  const { leading = true, trailing = true } = options;
 
-	let timeoutId: ReturnType<typeof setTimeout> | null = null;
-	let lastCallTime = 0;
-	// biome-ignore lint/suspicious/noExplicitAny: Parameters type inference
-	let lastArgs: any[] | null = null;
+  let timeoutId: ReturnType<typeof setTimeout> | null = null;
+  let lastCallTime = 0;
+  // biome-ignore lint/suspicious/noExplicitAny: Parameters type inference
+  let lastArgs: any[] | null = null;
 
-	// biome-ignore lint/suspicious/noExplicitAny: Parameters type inference
-	const invoke = (args: any[]) => {
-		lastCallTime = Date.now();
-		fn(...args);
-	};
+  // biome-ignore lint/suspicious/noExplicitAny: Parameters type inference
+  const invoke = (args: any[]) => {
+    lastCallTime = Date.now();
+    fn(...args);
+  };
 
-	// biome-ignore lint/suspicious/noExplicitAny: Parameters type inference
-	const throttled = (...args: any[]) => {
-		const now = Date.now();
-		const elapsed = now - lastCallTime;
+  // biome-ignore lint/suspicious/noExplicitAny: Parameters type inference
+  const throttled = (...args: any[]) => {
+    const now = Date.now();
+    const elapsed = now - lastCallTime;
 
-		// Store latest args for trailing call
-		lastArgs = args;
+    // Store latest args for trailing call
+    lastArgs = args;
 
-		if (elapsed >= wait) {
-			// Enough time has passed
-			if (timeoutId) {
-				clearTimeout(timeoutId);
-				timeoutId = null;
-			}
+    if (elapsed >= wait) {
+      // Enough time has passed
+      if (timeoutId) {
+        clearTimeout(timeoutId);
+        timeoutId = null;
+      }
 
-			if (leading) {
-				invoke(args);
-				lastArgs = null;
-			}
-		}
+      if (leading) {
+        invoke(args);
+        lastArgs = null;
+      }
+    }
 
-		// Schedule trailing call if not already scheduled
-		if (trailing && !timeoutId) {
-			const remaining = wait - elapsed;
-			timeoutId = setTimeout(
-				() => {
-					timeoutId = null;
-					if (lastArgs) {
-						invoke(lastArgs);
-						lastArgs = null;
-					}
-				},
-				Math.max(remaining, 0),
-			);
-		}
-	};
+    // Schedule trailing call if not already scheduled
+    if (trailing && !timeoutId) {
+      const remaining = wait - elapsed;
+      timeoutId = setTimeout(
+        () => {
+          timeoutId = null;
+          if (lastArgs) {
+            invoke(lastArgs);
+            lastArgs = null;
+          }
+        },
+        Math.max(remaining, 0)
+      );
+    }
+  };
 
-	return throttled as T;
+  return throttled as T;
 }
 
 /**
@@ -104,28 +104,28 @@ export function throttle<T extends (...args: any[]) => any>(
  */
 // biome-ignore lint/suspicious/noExplicitAny: Generic function requires any for flexibility
 function _debounce<T extends (...args: any[]) => any>(
-	fn: T,
-	wait: number,
+  fn: T,
+  wait: number
 ): T & { cancel: () => void } {
-	let timeoutId: ReturnType<typeof setTimeout> | null = null;
+  let timeoutId: ReturnType<typeof setTimeout> | null = null;
 
-	// biome-ignore lint/suspicious/noExplicitAny: Parameters type inference
-	const debounced = (...args: any[]) => {
-		if (timeoutId) {
-			clearTimeout(timeoutId);
-		}
-		timeoutId = setTimeout(() => {
-			timeoutId = null;
-			fn(...args);
-		}, wait);
-	};
+  // biome-ignore lint/suspicious/noExplicitAny: Parameters type inference
+  const debounced = (...args: any[]) => {
+    if (timeoutId) {
+      clearTimeout(timeoutId);
+    }
+    timeoutId = setTimeout(() => {
+      timeoutId = null;
+      fn(...args);
+    }, wait);
+  };
 
-	debounced.cancel = () => {
-		if (timeoutId) {
-			clearTimeout(timeoutId);
-			timeoutId = null;
-		}
-	};
+  debounced.cancel = () => {
+    if (timeoutId) {
+      clearTimeout(timeoutId);
+      timeoutId = null;
+    }
+  };
 
-	return debounced as T & { cancel: () => void };
+  return debounced as T & { cancel: () => void };
 }

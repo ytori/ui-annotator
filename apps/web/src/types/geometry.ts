@@ -11,10 +11,10 @@ import { z } from "zod";
 // ============================================
 
 export const pixelCoordSchema = z.object({
-	x: z.number(),
-	y: z.number(),
-	w: z.number().positive(),
-	h: z.number().positive(),
+  x: z.number(),
+  y: z.number(),
+  w: z.number().positive(),
+  h: z.number().positive(),
 });
 
 export type PixelCoord = z.infer<typeof pixelCoordSchema>;
@@ -24,10 +24,10 @@ export type PixelCoord = z.infer<typeof pixelCoordSchema>;
 // ============================================
 
 export const normCoordSchema = z.object({
-	x: z.number(),
-	y: z.number(),
-	w: z.number(),
-	h: z.number(),
+  x: z.number(),
+  y: z.number(),
+  w: z.number(),
+  h: z.number(),
 });
 
 export type NormCoord = z.infer<typeof normCoordSchema>;
@@ -37,8 +37,8 @@ export type NormCoord = z.infer<typeof normCoordSchema>;
 // ============================================
 
 export const bboxSchema = z.object({
-	pixel: pixelCoordSchema,
-	norm: normCoordSchema,
+  pixel: pixelCoordSchema,
+  norm: normCoordSchema,
 });
 
 export type BBox = z.infer<typeof bboxSchema>;
@@ -51,6 +51,6 @@ export type BBox = z.infer<typeof bboxSchema>;
  * 2D point coordinate.
  */
 export interface Point {
-	x: number;
-	y: number;
+  x: number;
+  y: number;
 }

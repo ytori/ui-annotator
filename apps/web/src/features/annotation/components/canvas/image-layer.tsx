@@ -1,9 +1,9 @@
 import { Image, Layer } from "react-konva";
 
 interface ImageLayerProps {
-	image: HTMLImageElement | null;
-	width: number;
-	height: number;
+  image: HTMLImageElement | null;
+  width: number;
+  height: number;
 }
 
 /**
@@ -11,9 +11,9 @@ interface ImageLayerProps {
  * Displays the screenshot/image that annotations are placed on.
  */
 export function ImageLayer({ image, width, height }: ImageLayerProps) {
-	return (
-		<Layer>
-			{image && <Image image={image} width={width} height={height} />}
-		</Layer>
-	);
+  return (
+    <Layer>
+      {image && <Image height={height} image={image} width={width} />}
+    </Layer>
+  );
 }

@@ -10,18 +10,18 @@ import type { UIComponentSuggestion } from "../types";
  * Each loader handles a specific manifest format (Storybook, Figma, custom, etc.)
  */
 export interface ManifestLoader {
-	/** Unique identifier for this loader */
-	id: string;
+  /** Unique identifier for this loader */
+  id: string;
 
-	/** Display name */
-	name: string;
+  /** Display name */
+  name: string;
 
-	/** File extension hint (for UI) */
-	fileExtension?: string;
+  /** File extension hint (for UI) */
+  fileExtension?: string;
 
-	/** Check if this loader can handle the given JSON */
-	canHandle: (json: unknown) => boolean;
+  /** Check if this loader can handle the given JSON */
+  canHandle: (json: unknown) => boolean;
 
-	/** Parse the JSON and return components */
-	parse: (json: unknown) => UIComponentSuggestion[];
+  /** Parse the JSON and return components */
+  parse: (json: unknown) => UIComponentSuggestion[];
 }

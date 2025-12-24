@@ -12,12 +12,12 @@ const EditorView = lazy(editorViewImport);
  * Preload EditorView during idle time
  */
 function usePreloadEditorView() {
-	useEffect(() => {
-		const id = requestIdle(() => {
-			editorViewImport();
-		});
-		return () => cancelIdle(id);
-	}, []);
+  useEffect(() => {
+    const id = requestIdle(() => {
+      editorViewImport();
+    });
+    return () => cancelIdle(id);
+  }, []);
 }
 
 /**
@@ -25,17 +25,17 @@ function usePreloadEditorView() {
  * based on project state.
  */
 export function RootPage() {
-	const project = useAnnotationStore(selectProject);
+  const project = useAnnotationStore(selectProject);
 
-	usePreloadEditorView();
+  usePreloadEditorView();
 
-	if (!project) {
-		return <WelcomeView />;
-	}
+  if (!project) {
+    return <WelcomeView />;
+  }
 
-	return (
-		<Suspense fallback={<Loader />}>
-			<EditorView />
-		</Suspense>
-	);
+  return (
+    <Suspense fallback={<Loader />}>
+      <EditorView />
+    </Suspense>
+  );
 }

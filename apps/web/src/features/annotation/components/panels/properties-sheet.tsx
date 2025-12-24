@@ -3,23 +3,23 @@ import { BaseSheet } from "./base-sheet";
 import { type ComponentEditorProps, PropertiesPanel } from "./properties-panel";
 
 export interface PropertiesSheetProps {
-	open: boolean;
-	onOpenChange: (open: boolean) => void;
-	renderComponentEditor?: (props: ComponentEditorProps) => ReactNode;
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
+  renderComponentEditor?: (props: ComponentEditorProps) => ReactNode;
 }
 
 export function PropertiesSheet({
-	open,
-	onOpenChange,
-	renderComponentEditor,
+  open,
+  onOpenChange,
+  renderComponentEditor,
 }: PropertiesSheetProps) {
-	return (
-		<BaseSheet open={open} onOpenChange={onOpenChange} title="Properties">
-			<PropertiesPanel
-				showHeader={false}
-				renderComponentEditor={renderComponentEditor}
-				onDeleted={() => onOpenChange(false)}
-			/>
-		</BaseSheet>
-	);
+  return (
+    <BaseSheet onOpenChange={onOpenChange} open={open} title="Properties">
+      <PropertiesPanel
+        onDeleted={() => onOpenChange(false)}
+        renderComponentEditor={renderComponentEditor}
+        showHeader={false}
+      />
+    </BaseSheet>
+  );
 }

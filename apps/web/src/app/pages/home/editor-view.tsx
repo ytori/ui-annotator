@@ -4,11 +4,11 @@ import { MobileEditorView } from "./editor-view-mobile";
 
 // Default export for React.lazy compatibility
 export default function EditorView() {
-	const { isMobile } = useResponsiveLayout();
+  const { isMobile } = useResponsiveLayout();
 
-	if (isMobile) {
-		return <MobileEditorView />;
-	}
+  if (isMobile) {
+    return <MobileEditorView />;
+  }
 
-	return <DesktopEditorView />;
+  return <DesktopEditorView />;
 }

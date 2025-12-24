@@ -5,7 +5,7 @@
  */
 
 export {
-	getAcceptPattern,
-	isAcceptableFile,
+  getAcceptPattern,
+  isAcceptableFile,
 } from "./services/codecs";
 export { openFile, saveProjectFile } from "./services/project-storage";

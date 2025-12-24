@@ -7,8 +7,8 @@
 
 export { CanvasContainer as KonvaCanvas } from "../components/canvas/canvas-container";
 export {
-	FloatingToolbar,
-	MobileToolSwitcher,
-	ZoomControls,
+  FloatingToolbar,
+  MobileToolSwitcher,
+  ZoomControls,
 } from "../components/toolbar/floating-toolbar";
 export { useKeyboardShortcuts } from "../hooks/use-keyboard-shortcuts";

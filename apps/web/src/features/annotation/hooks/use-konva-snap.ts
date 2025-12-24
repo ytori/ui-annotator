@@ -4,223 +4,331 @@ import { snapConfig } from "../constants/canvas";
 import { useUIStore } from "../store";
 
 interface SnapTarget {
-	value: number;
-	type: "edge" | "center" | "bound";
+  value: number;
+  type: "edge" | "center" | "bound";
 }
 
 interface BoundingBox {
-	x: number;
-	y: number;
-	w: number;
-	h: number;
+  x: number;
+  y: number;
+  w: number;
+  h: number;
 }
 
+interface SnapResult {
+  value: number;
+  guidelinePosition: number;
+}
+
+interface SnapTargets {
+  vertical: SnapTarget[];
+  horizontal: SnapTarget[];
+}
+
+// ============================================
+// Helper: Collect Snap Targets
+// ============================================
+
+/** Collect snap targets from elements and image bounds */
+function collectSnapTargets(
+  elements: EditorElement[],
+  excludeIds: ElementId[],
+  imageWidth: number,
+  imageHeight: number
+): SnapTargets {
+  const vertical: SnapTarget[] = [];
+  const horizontal: SnapTarget[] = [];
+
+  // Add element edges and centers
+  for (const element of elements) {
+    if (excludeIds.includes(element.id)) {
+      continue;
+    }
+
+    const { x, y, w, h } = element.bbox.pixel;
+
+    vertical.push(
+      { value: x, type: "edge" },
+      { value: x + w, type: "edge" },
+      { value: x + w / 2, type: "center" }
+    );
+
+    horizontal.push(
+      { value: y, type: "edge" },
+      { value: y + h, type: "edge" },
+      { value: y + h / 2, type: "center" }
+    );
+  }
+
+  // Add image bounds
+  vertical.push(
+    { value: 0, type: "bound" },
+    { value: imageWidth / 2, type: "bound" },
+    { value: imageWidth, type: "bound" }
+  );
+  horizontal.push(
+    { value: 0, type: "bound" },
+    { value: imageHeight / 2, type: "bound" },
+    { value: imageHeight, type: "bound" }
+  );
+
+  return { vertical, horizontal };
+}
+
+// ============================================
+// Helper: Calculate Check Points
+// ============================================
+
+/** Get points to check for snapping based on moving box */
+function getCheckPoints(
+  point: { x: number; y: number },
+  movingBox?: BoundingBox
+): { xPoints: number[]; yPoints: number[] } {
+  if (movingBox) {
+    return {
+      xPoints: [point.x, point.x + movingBox.w, point.x + movingBox.w / 2],
+      yPoints: [point.y, point.y + movingBox.h, point.y + movingBox.h / 2],
+    };
+  }
+  return { xPoints: [point.x], yPoints: [point.y] };
+}
+
+/** Calculate offset based on which check point matched */
+function calculateOffset(checkIndex: number, boxSize: number): number {
+  if (checkIndex === 0) {
+    return 0;
+  }
+  if (checkIndex === 1) {
+    return -boxSize;
+  }
+  return -boxSize / 2;
+}
+
+// ============================================
+// Helper: Find Best Snap
+// ============================================
+
+/** Find best snap position for a single axis */
+function findBestAxisSnap(
+  checkPoints: number[],
+  targets: SnapTarget[],
+  boxSize: number
+): SnapResult | null {
+  let bestSnap: SnapResult | null = null;
+  let minDistance = snapConfig.threshold;
+
+  for (let i = 0; i < checkPoints.length; i++) {
+    const checkValue = checkPoints[i];
+    for (const target of targets) {
+      const distance = Math.abs(checkValue - target.value);
+      if (distance < minDistance) {
+        minDistance = distance;
+        const offset = calculateOffset(i, boxSize);
+        bestSnap = {
+          value: target.value + offset,
+          guidelinePosition: target.value,
+        };
+      }
+    }
+  }
+
+  return bestSnap;
+}
+
+// ============================================
+// Helper: Build Guidelines
+// ============================================
+
+interface Guideline {
+  type: "vertical" | "horizontal";
+  position: number;
+  start: number;
+  end: number;
+}
+
+/** Build guidelines from snap results */
+function buildGuidelines(
+  xSnap: SnapResult | null,
+  ySnap: SnapResult | null,
+  imageWidth: number,
+  imageHeight: number
+): Guideline[] {
+  const guidelines: Guideline[] = [];
+
+  if (xSnap) {
+    guidelines.push({
+      type: "vertical",
+      position: xSnap.guidelinePosition,
+      start: 0,
+      end: imageHeight,
+    });
+  }
+
+  if (ySnap) {
+    guidelines.push({
+      type: "horizontal",
+      position: ySnap.guidelinePosition,
+      start: 0,
+      end: imageWidth,
+    });
+  }
+
+  return guidelines;
+}
+
+// ============================================
+// Helper: Resize Snap
+// ============================================
+
+/** Collect simple numeric targets for resize snapping */
+function collectResizeTargets(
+  elements: EditorElement[],
+  excludeId: ElementId,
+  imageWidth: number,
+  imageHeight: number
+): { vertical: number[]; horizontal: number[] } {
+  const vertical = [0, imageWidth / 2, imageWidth];
+  const horizontal = [0, imageHeight / 2, imageHeight];
+
+  for (const element of elements) {
+    if (element.id === excludeId) {
+      continue;
+    }
+    const { x, y, w, h } = element.bbox.pixel;
+    vertical.push(x, x + w, x + w / 2);
+    horizontal.push(y, y + h, y + h / 2);
+  }
+
+  return { vertical, horizontal };
+}
+
+/** Find snap for a single edge value */
+function findEdgeSnap(edgeValue: number, targets: number[]): number | null {
+  for (const target of targets) {
+    if (Math.abs(edgeValue - target) < snapConfig.threshold) {
+      return target;
+    }
+  }
+  return null;
+}
+
+// ============================================
+// Main Hook
+// ============================================
+
 export function useKonvaSnap() {
-	const setActiveGuidelines = useUIStore((state) => state.setActiveGuidelines);
-	const clearActiveGuidelines = useUIStore(
-		(state) => state.clearActiveGuidelines,
-	);
+  const setActiveGuidelines = useUIStore((state) => state.setActiveGuidelines);
+  const clearActiveGuidelines = useUIStore(
+    (state) => state.clearActiveGuidelines
+  );
 
-	const getSnapResult = useCallback(
-		(
-			point: { x: number; y: number },
-			elements: EditorElement[],
-			excludeIds: ElementId[],
-			imageWidth: number,
-			imageHeight: number,
-			movingBox?: BoundingBox,
-		): { x: number; y: number } => {
-			const verticalTargets: SnapTarget[] = [];
-			const horizontalTargets: SnapTarget[] = [];
+  const getSnapResult = useCallback(
+    (
+      point: { x: number; y: number },
+      elements: EditorElement[],
+      excludeIds: ElementId[],
+      imageWidth: number,
+      imageHeight: number,
+      movingBox?: BoundingBox
+    ): { x: number; y: number } => {
+      // Collect all snap targets
+      const targets = collectSnapTargets(
+        elements,
+        excludeIds,
+        imageWidth,
+        imageHeight
+      );
 
-			// Add element edges and centers
-			for (const element of elements) {
-				if (excludeIds.includes(element.id)) continue;
+      // Get points to check
+      const { xPoints, yPoints } = getCheckPoints(point, movingBox);
 
-				const { x, y, w, h } = element.bbox.pixel;
+      // Find best snaps
+      const xSnap = findBestAxisSnap(
+        xPoints,
+        targets.vertical,
+        movingBox?.w ?? 0
+      );
+      const ySnap = findBestAxisSnap(
+        yPoints,
+        targets.horizontal,
+        movingBox?.h ?? 0
+      );
 
-				// Vertical lines (x positions)
-				verticalTargets.push(
-					{ value: x, type: "edge" },
-					{ value: x + w, type: "edge" },
-					{ value: x + w / 2, type: "center" },
-				);
+      // Update guidelines
+      const guidelines = buildGuidelines(xSnap, ySnap, imageWidth, imageHeight);
+      setActiveGuidelines(guidelines);
 
-				// Horizontal lines (y positions)
-				horizontalTargets.push(
-					{ value: y, type: "edge" },
-					{ value: y + h, type: "edge" },
-					{ value: y + h / 2, type: "center" },
-				);
-			}
+      return {
+        x: xSnap ? xSnap.value : point.x,
+        y: ySnap ? ySnap.value : point.y,
+      };
+    },
+    [setActiveGuidelines]
+  );
 
-			// Add image bounds
-			verticalTargets.push(
-				{ value: 0, type: "bound" },
-				{ value: imageWidth / 2, type: "bound" },
-				{ value: imageWidth, type: "bound" },
-			);
-			horizontalTargets.push(
-				{ value: 0, type: "bound" },
-				{ value: imageHeight / 2, type: "bound" },
-				{ value: imageHeight, type: "bound" },
-			);
+  const clearGuidelines = useCallback(() => {
+    clearActiveGuidelines();
+  }, [clearActiveGuidelines]);
 
-			// Points to check for snapping
-			const xPoints = movingBox
-				? [point.x, point.x + movingBox.w, point.x + movingBox.w / 2]
-				: [point.x];
-			const yPoints = movingBox
-				? [point.y, point.y + movingBox.h, point.y + movingBox.h / 2]
-				: [point.y];
+  const getResizeSnapResult = useCallback(
+    (
+      edges: { left: number; right: number; top: number; bottom: number },
+      elements: EditorElement[],
+      excludeId: ElementId,
+      imageWidth: number,
+      imageHeight: number
+    ): {
+      snapLeft: number | null;
+      snapRight: number | null;
+      snapTop: number | null;
+      snapBottom: number | null;
+      guidelines: Array<{ type: "vertical" | "horizontal"; position: number }>;
+    } => {
+      // Collect targets
+      const targets = collectResizeTargets(
+        elements,
+        excludeId,
+        imageWidth,
+        imageHeight
+      );
 
-			// Find best X snap
-			let bestXSnap: { value: number; offset: number } | null = null;
-			let minXDistance = snapConfig.threshold;
+      // Find edge snaps
+      const snapLeft = findEdgeSnap(edges.left, targets.vertical);
+      const snapRight = findEdgeSnap(edges.right, targets.vertical);
+      const snapTop = findEdgeSnap(edges.top, targets.horizontal);
+      const snapBottom = findEdgeSnap(edges.bottom, targets.horizontal);
 
-			for (let i = 0; i < xPoints.length; i++) {
-				const checkX = xPoints[i];
-				for (const target of verticalTargets) {
-					const distance = Math.abs(checkX - target.value);
-					if (distance < minXDistance) {
-						minXDistance = distance;
-						const boxW = movingBox?.w ?? 0;
-						const offset = i === 0 ? 0 : i === 1 ? -boxW : -boxW / 2;
-						bestXSnap = { value: target.value + offset, offset: target.value };
-					}
-				}
-			}
+      // Build guidelines
+      const guidelines: Array<{
+        type: "vertical" | "horizontal";
+        position: number;
+      }> = [];
 
-			// Find best Y snap
-			let bestYSnap: { value: number; offset: number } | null = null;
-			let minYDistance = snapConfig.threshold;
+      if (snapLeft !== null) {
+        guidelines.push({ type: "vertical", position: snapLeft });
+      }
+      if (snapRight !== null) {
+        guidelines.push({ type: "vertical", position: snapRight });
+      }
+      if (snapTop !== null) {
+        guidelines.push({ type: "horizontal", position: snapTop });
+      }
+      if (snapBottom !== null) {
+        guidelines.push({ type: "horizontal", position: snapBottom });
+      }
 
-			for (let i = 0; i < yPoints.length; i++) {
-				const checkY = yPoints[i];
-				for (const target of horizontalTargets) {
-					const distance = Math.abs(checkY - target.value);
-					if (distance < minYDistance) {
-						minYDistance = distance;
-						const boxH = movingBox?.h ?? 0;
-						const offset = i === 0 ? 0 : i === 1 ? -boxH : -boxH / 2;
-						bestYSnap = { value: target.value + offset, offset: target.value };
-					}
-				}
-			}
+      setActiveGuidelines(
+        guidelines.map((g) => ({
+          ...g,
+          start: 0,
+          end: g.type === "vertical" ? imageHeight : imageWidth,
+        }))
+      );
 
-			// Update guidelines
-			const guidelines: Array<{
-				type: "vertical" | "horizontal";
-				position: number;
-				start: number;
-				end: number;
-			}> = [];
+      return { snapLeft, snapRight, snapTop, snapBottom, guidelines };
+    },
+    [setActiveGuidelines]
+  );
 
-			if (bestXSnap) {
-				guidelines.push({
-					type: "vertical",
-					position: bestXSnap.offset,
-					start: 0,
-					end: imageHeight,
-				});
-			}
-
-			if (bestYSnap) {
-				guidelines.push({
-					type: "horizontal",
-					position: bestYSnap.offset,
-					start: 0,
-					end: imageWidth,
-				});
-			}
-
-			setActiveGuidelines(guidelines);
-
-			return {
-				x: bestXSnap ? bestXSnap.value : point.x,
-				y: bestYSnap ? bestYSnap.value : point.y,
-			};
-		},
-		[setActiveGuidelines],
-	);
-
-	const clearGuidelines = useCallback(() => {
-		clearActiveGuidelines();
-	}, [clearActiveGuidelines]);
-
-	// Edge-based snapping for resize operations
-	const getResizeSnapResult = useCallback(
-		(
-			edges: { left: number; right: number; top: number; bottom: number },
-			elements: EditorElement[],
-			excludeId: ElementId,
-			imageWidth: number,
-			imageHeight: number,
-		): {
-			snapLeft: number | null;
-			snapRight: number | null;
-			snapTop: number | null;
-			snapBottom: number | null;
-			guidelines: Array<{ type: "vertical" | "horizontal"; position: number }>;
-		} => {
-			const verticalTargets = [0, imageWidth / 2, imageWidth];
-			const horizontalTargets = [0, imageHeight / 2, imageHeight];
-
-			for (const element of elements) {
-				if (element.id === excludeId) continue;
-				const { x, y, w, h } = element.bbox.pixel;
-				verticalTargets.push(x, x + w, x + w / 2);
-				horizontalTargets.push(y, y + h, y + h / 2);
-			}
-
-			const threshold = snapConfig.threshold;
-			const guidelines: Array<{
-				type: "vertical" | "horizontal";
-				position: number;
-			}> = [];
-
-			let snapLeft: number | null = null;
-			let snapRight: number | null = null;
-			let snapTop: number | null = null;
-			let snapBottom: number | null = null;
-
-			for (const target of verticalTargets) {
-				if (snapLeft === null && Math.abs(edges.left - target) < threshold) {
-					snapLeft = target;
-					guidelines.push({ type: "vertical", position: target });
-				}
-				if (snapRight === null && Math.abs(edges.right - target) < threshold) {
-					snapRight = target;
-					guidelines.push({ type: "vertical", position: target });
-				}
-			}
-
-			for (const target of horizontalTargets) {
-				if (snapTop === null && Math.abs(edges.top - target) < threshold) {
-					snapTop = target;
-					guidelines.push({ type: "horizontal", position: target });
-				}
-				if (
-					snapBottom === null &&
-					Math.abs(edges.bottom - target) < threshold
-				) {
-					snapBottom = target;
-					guidelines.push({ type: "horizontal", position: target });
-				}
-			}
-
-			setActiveGuidelines(
-				guidelines.map((g) => ({
-					...g,
-					start: 0,
-					end: g.type === "vertical" ? imageHeight : imageWidth,
-				})),
-			);
-
-			return { snapLeft, snapRight, snapTop, snapBottom, guidelines };
-		},
-		[setActiveGuidelines],
-	);
-
-	return { getSnapResult, getResizeSnapResult, clearGuidelines };
+  return { getSnapResult, getResizeSnapResult, clearGuidelines };
 }

@@ -12,9 +12,9 @@ import { getComponentIcon } from "@/features/component-catalog";
  * without creating a direct dependency.
  */
 export function AnnotationProvider({ children }: { children: ReactNode }) {
-	return (
-		<IconResolverProvider resolver={getComponentIcon}>
-			{children}
-		</IconResolverProvider>
-	);
+  return (
+    <IconResolverProvider resolver={getComponentIcon}>
+      {children}
+    </IconResolverProvider>
+  );
 }

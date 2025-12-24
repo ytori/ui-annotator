@@ -12,13 +12,13 @@
  * @returns Promise resolving to the loaded image element
  */
 export function loadImageFromUrl(url: string): Promise<HTMLImageElement> {
-	return new Promise((resolve, reject) => {
-		const img = new Image();
-		img.crossOrigin = "anonymous";
-		img.onload = () => resolve(img);
-		img.onerror = () => reject(new Error("Failed to load image"));
-		img.src = url;
-	});
+  return new Promise((resolve, reject) => {
+    const img = new Image();
+    img.crossOrigin = "anonymous";
+    img.onload = () => resolve(img);
+    img.onerror = () => reject(new Error("Failed to load image"));
+    img.src = url;
+  });
 }
 
 /**
@@ -28,12 +28,12 @@ export function loadImageFromUrl(url: string): Promise<HTMLImageElement> {
  * @returns Promise resolving to image element and dimensions
  */
 export async function loadImageWithDimensions(
-	url: string,
+  url: string
 ): Promise<{ image: HTMLImageElement; width: number; height: number }> {
-	const image = await loadImageFromUrl(url);
-	return {
-		image,
-		width: image.naturalWidth,
-		height: image.naturalHeight,
-	};
+  const image = await loadImageFromUrl(url);
+  return {
+    image,
+    width: image.naturalWidth,
+    height: image.naturalHeight,
+  };
 }

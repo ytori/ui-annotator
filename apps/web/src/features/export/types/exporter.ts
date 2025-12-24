@@ -16,13 +16,13 @@ import type { ExportData } from "./export-schema";
  * This is what the app layer provides to the export feature.
  */
 export interface ExportInput {
-	name: string;
-	description?: string;
-	/** Original source file name with extension (e.g., "screenshot.png") */
-	sourceFileName: string;
-	imageWidth: number;
-	imageHeight: number;
-	elements: Element[];
+  name: string;
+  description?: string;
+  /** Original source file name with extension (e.g., "screenshot.png") */
+  sourceFileName: string;
+  imageWidth: number;
+  imageHeight: number;
+  elements: Element[];
 }
 
 // ============================================
@@ -33,20 +33,20 @@ export interface ExportInput {
  * Exporter plugin metadata.
  */
 export interface ExporterMeta {
-	/** Unique plugin identifier */
-	id: string;
-	/** Human-readable plugin name */
-	name: string;
-	/** Plugin description */
-	description: string;
-	/** File extension for downloads (e.g., 'json', 'csv') */
-	fileExtension: string;
-	/** MIME type for the exported content */
-	mimeType: string;
-	/** Whether this format supports clipboard copy */
-	supportsClipboard?: boolean;
-	/** Whether this format supports file download */
-	supportsDownload?: boolean;
+  /** Unique plugin identifier */
+  id: string;
+  /** Human-readable plugin name */
+  name: string;
+  /** Plugin description */
+  description: string;
+  /** File extension for downloads (e.g., 'json', 'csv') */
+  fileExtension: string;
+  /** MIME type for the exported content */
+  mimeType: string;
+  /** Whether this format supports clipboard copy */
+  supportsClipboard?: boolean;
+  /** Whether this format supports file download */
+  supportsDownload?: boolean;
 }
 
 // ============================================
@@ -57,12 +57,12 @@ export interface ExporterMeta {
  * Export options that can be passed to exporters.
  */
 export interface ExportOptions {
-	/** Whether to format output for readability */
-	prettyPrint?: boolean;
-	/** Custom filename (without extension) */
-	filename?: string;
-	/** Additional plugin-specific options */
-	[key: string]: unknown;
+  /** Whether to format output for readability */
+  prettyPrint?: boolean;
+  /** Custom filename (without extension) */
+  filename?: string;
+  /** Additional plugin-specific options */
+  [key: string]: unknown;
 }
 
 // ============================================
@@ -73,14 +73,14 @@ export interface ExportOptions {
  * Validation result for pre-export checks.
  */
 export interface ValidationResult {
-	/** Whether all validations passed */
-	isValid: boolean;
-	/** Element IDs that failed validation */
-	invalidElementIds: ElementId[];
-	/** Human-readable error messages */
-	errors: string[];
-	/** Human-readable warning messages */
-	warnings: string[];
+  /** Whether all validations passed */
+  isValid: boolean;
+  /** Element IDs that failed validation */
+  invalidElementIds: ElementId[];
+  /** Human-readable error messages */
+  errors: string[];
+  /** Human-readable warning messages */
+  warnings: string[];
 }
 
 // ============================================
@@ -91,16 +91,16 @@ export interface ValidationResult {
  * Result of an export operation.
  */
 export interface ExportResult {
-	/** Whether the export succeeded */
-	success: boolean;
-	/** The exported content as a string */
-	content?: string;
-	/** Error message if export failed */
-	error?: string;
-	/** Suggested filename for download */
-	filename: string;
-	/** MIME type of the exported content */
-	mimeType: string;
+  /** Whether the export succeeded */
+  success: boolean;
+  /** The exported content as a string */
+  content?: string;
+  /** Error message if export failed */
+  error?: string;
+  /** Suggested filename for download */
+  filename: string;
+  /** MIME type of the exported content */
+  mimeType: string;
 }
 
 // ============================================
@@ -115,23 +115,26 @@ export interface ExportResult {
  * format-specific output strings.
  */
 export interface ExporterPlugin {
-	/** Plugin metadata */
-	readonly meta: ExporterMeta;
+  /** Plugin metadata */
+  readonly meta: ExporterMeta;
 
-	/**
-	 * Validate data before export.
-	 * @param data - The export data to validate
-	 * @returns Validation result with any errors or warnings
-	 */
-	validate(data: ExportData): ValidationResult;
+  /**
+   * Validate data before export.
+   * @param data - The export data to validate
+   * @returns Validation result with any errors or warnings
+   */
+  validate(data: ExportData): ValidationResult;
 
-	/**
-	 * Export to the plugin's format.
-	 * @param data - The export data (unified format)
-	 * @param options - Optional export configuration
-	 * @returns Export result with content or error
-	 */
-	export(data: ExportData, options?: ExportOptions): Promise<ExportResult>;
+  /**
+   * Export to the plugin's format.
+   * @param data - The export data (unified format)
+   * @param options - Optional export configuration
+   * @returns Export result with content or error
+   */
+  export(
+    data: ExportData,
+    options?: ExportOptions
+  ): Promise<ExportResult> | ExportResult;
 }
 
 // ============================================
@@ -142,6 +145,6 @@ export interface ExporterPlugin {
  * Registry entry for a plugin.
  */
 export interface PluginRegistryEntry {
-	plugin: ExporterPlugin;
-	enabled: boolean;
+  plugin: ExporterPlugin;
+  enabled: boolean;
 }

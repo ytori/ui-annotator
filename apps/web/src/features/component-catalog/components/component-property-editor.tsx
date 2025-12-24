@@ -3,8 +3,8 @@ import type { ComponentSpec } from "@/types/component";
 import { ComponentCombobox } from "./component-combobox";
 
 export interface ComponentPropertyEditorProps {
-	value: ComponentSpec | undefined;
-	onValueChange: (spec: ComponentSpec | null) => void;
+  value: ComponentSpec | undefined;
+  onValueChange: (spec: ComponentSpec | null) => void;
 }
 
 /**
@@ -13,27 +13,27 @@ export interface ComponentPropertyEditorProps {
  * Provides a unified interface for selecting component name.
  */
 export function ComponentPropertyEditor({
-	value,
-	onValueChange,
+  value,
+  onValueChange,
 }: ComponentPropertyEditorProps) {
-	const handleComponentChange = (name: string) => {
-		if (!name) {
-			onValueChange(null);
-		} else {
-			onValueChange({
-				...value,
-				name,
-			});
-		}
-	};
+  const handleComponentChange = (name: string) => {
+    if (name) {
+      onValueChange({
+        ...value,
+        name,
+      });
+    } else {
+      onValueChange(null);
+    }
+  };
 
-	return (
-		<div className="space-y-1.5">
-			<Label className="text-xs text-muted-foreground">Component</Label>
-			<ComponentCombobox
-				value={value?.name ?? ""}
-				onValueChange={handleComponentChange}
-			/>
-		</div>
-	);
+  return (
+    <div className="space-y-1.5">
+      <Label className="text-muted-foreground text-xs">Component</Label>
+      <ComponentCombobox
+        onValueChange={handleComponentChange}
+        value={value?.name ?? ""}
+      />
+    </div>
+  );
 }

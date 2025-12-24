@@ -17,41 +17,41 @@ export type { ManifestLoader } from "./types";
  * Builtin loader is last as fallback.
  */
 const loaders: ManifestLoader[] = [
-	storybookIndexLoader,
-	storybookManifestLoader,
-	// Add more loaders here:
-	// figmaLoader,
-	// customLoader,
-	builtinLoader, // Builtin last (fallback)
+  storybookIndexLoader,
+  storybookManifestLoader,
+  // Add more loaders here:
+  // figmaLoader,
+  // customLoader,
+  builtinLoader, // Builtin last (fallback)
 ];
 
 /**
  * Register a new loader
  */
 function _registerLoader(loader: ManifestLoader): void {
-	// Add to beginning so custom loaders take priority
-	loaders.unshift(loader);
+  // Add to beginning so custom loaders take priority
+  loaders.unshift(loader);
 }
 
 /**
  * Get all registered loaders
  */
 function _getLoaders(): ManifestLoader[] {
-	return [...loaders];
+  return [...loaders];
 }
 
 /**
  * Find a loader by its ID
  */
 export function getLoaderById(id: string): ManifestLoader | undefined {
-	return loaders.find((loader) => loader.id === id);
+  return loaders.find((loader) => loader.id === id);
 }
 
 /**
  * Find a loader that can handle the given JSON
  */
 export function findLoader(json: unknown): ManifestLoader | undefined {
-	return loaders.find((loader) => loader.canHandle(json));
+  return loaders.find((loader) => loader.canHandle(json));
 }
 
 /**
@@ -59,19 +59,19 @@ export function findLoader(json: unknown): ManifestLoader | undefined {
  * Throws if no loader can handle the format
  */
 export function parseManifest(json: unknown): {
-	loaderId: string;
-	components: ReturnType<ManifestLoader["parse"]>;
+  loaderId: string;
+  components: ReturnType<ManifestLoader["parse"]>;
 } {
-	const loader = findLoader(json);
-	if (!loader) {
-		throw new Error(
-			"Unknown manifest format. Supported formats: " +
-				loaders.map((l) => l.name).join(", "),
-		);
-	}
+  const loader = findLoader(json);
+  if (!loader) {
+    throw new Error(
+      "Unknown manifest format. Supported formats: " +
+        loaders.map((l) => l.name).join(", ")
+    );
+  }
 
-	return {
-		loaderId: loader.id,
-		components: loader.parse(json),
-	};
+  return {
+    loaderId: loader.id,
+    components: loader.parse(json),
+  };
 }

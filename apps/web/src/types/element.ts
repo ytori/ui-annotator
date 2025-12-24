@@ -11,11 +11,11 @@ import { bboxSchema } from "./geometry";
  */
 
 export const elementSchema = z.object({
-	id: z.string(),
-	label: z.string(),
-	bbox: bboxSchema,
-	component: componentSpecSchema.optional(),
-	notes: z.string().optional(),
+  id: z.string(),
+  label: z.string(),
+  bbox: bboxSchema,
+  component: componentSpecSchema.optional(),
+  notes: z.string().optional(),
 });
 
 export type Element = z.infer<typeof elementSchema>;

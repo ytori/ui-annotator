@@ -12,8 +12,8 @@ import { z } from "zod";
 // ============================================
 
 export const VERSIONS = {
-	storage: "0.0.1",
-	export: "0.0.1",
+  storage: "0.0.1",
+  export: "0.0.1",
 } as const;
 
 // ============================================
@@ -21,8 +21,8 @@ export const VERSIONS = {
 // ============================================
 
 export const versionsSchema = z.object({
-	/** Storage format version (PNG embedding) */
-	storage: z.literal(VERSIONS.storage),
-	/** Export schema version (JSON/Prompt output) */
-	export: z.literal(VERSIONS.export),
+  /** Storage format version (PNG embedding) */
+  storage: z.literal(VERSIONS.storage),
+  /** Export schema version (JSON/Prompt output) */
+  export: z.literal(VERSIONS.export),
 });
