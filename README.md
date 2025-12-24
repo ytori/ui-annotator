@@ -4,6 +4,8 @@
 
 A visual annotation tool that transforms screenshots into structured JSON specifications for AI-powered UI development. Perfect for bridging the gap between design and AI code generation.
 
+![UI Annotator](./ui-annotator.png)
+
 ## The Problem
 
 When using AI agents like Claude Code to generate UI from screenshots:
@@ -15,7 +17,7 @@ When using AI agents like Claude Code to generate UI from screenshots:
 
 ## The Solution
 
-UI Annotator lets you draw bounding boxes directly on screenshots and annotate each element with semantic information. The result is a structured JSON file that tells AI agents *exactly* what to build.
+UI Annotator lets you draw bounding boxes directly on screenshots and annotate each element with semantic information. The result is a structured JSON file that tells AI agents _exactly_ what to build.
 
 ### How It Works
 
