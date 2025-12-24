@@ -10,8 +10,8 @@ import { type Project, projectSchema, versionsSchema } from "@/types";
 // ============================================
 
 /**
- * Schema for embedded project data (stored in PNG tEXt chunk).
- * Note: imageUrl is excluded as the PNG itself is the image source.
+ * Schema for embedded project data (stored in archive).
+ * Note: imageUrl is excluded as the image is stored separately.
  */
 export const embeddedProjectDataSchema = z.object({
 	storageVersion: versionsSchema.shape.storage,
@@ -25,13 +25,13 @@ export type EmbeddedProjectData = z.infer<typeof embeddedProjectDataSchema>;
 // ============================================
 
 /**
- * Result of opening a PNG file.
+ * Result of opening a project file.
  */
 export interface OpenResult {
-	/** The project data (with imageUrl populated from PNG) */
+	/** The project data (with imageUrl populated from archive) */
 	project: Project;
 	/** The loaded image element (ready for immediate use) */
 	image: HTMLImageElement;
-	/** Whether the PNG had embedded project data */
+	/** Whether the file had embedded project data */
 	hasEmbeddedData: boolean;
 }

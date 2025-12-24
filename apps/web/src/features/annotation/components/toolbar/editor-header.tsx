@@ -11,9 +11,11 @@ import { EditorMenu } from "./editor-menu";
  * All file/export operations are injected from outside
  */
 export interface EditorHeaderProps {
-	/** Handler for opening an image file (with embedded data if PNG) */
+	/** Accept pattern for file input */
+	acceptPattern: string;
+	/** Handler for opening an image or project file */
 	onOpen?: (file: File) => void;
-	/** Handler for saving project to PNG */
+	/** Handler for saving project */
 	onSave?: () => void;
 	/** Handler for exporting for AI */
 	onExport?: () => void;
@@ -24,6 +26,7 @@ export interface EditorHeaderProps {
 }
 
 export function EditorHeader({
+	acceptPattern,
 	onOpen,
 	onSave,
 	onExport,
@@ -54,7 +57,7 @@ export function EditorHeader({
 			{project && (
 				<div
 					className={cn(
-						"flex items-center text-sm text-muted-foreground",
+						"flex items-center text-muted-foreground text-sm",
 						compact ? "gap-1.5" : "gap-2",
 					)}
 				>
@@ -74,10 +77,10 @@ export function EditorHeader({
 			<div className="flex items-center gap-4">
 				{project && !compact && (
 					<Button
-						variant="default"
-						size="sm"
 						className="gap-1.5"
 						onClick={onExport}
+						size="sm"
+						variant="default"
 					>
 						<FileUp className="h-4 w-4" />
 						Export for AI
@@ -85,24 +88,24 @@ export function EditorHeader({
 				)}
 				<EditorMenu
 					hasProject={!!project}
-					onOpen={() => openInputRef.current?.click()}
-					onSave={onSave}
+					onClear={clearProject}
 					onExport={onExport}
 					onImportComponentLibrary={onImportComponentLibrary}
-					onClear={clearProject}
+					onOpen={() => openInputRef.current?.click()}
+					onSave={onSave}
 				/>
 			</div>
 
 			<input
-				ref={openInputRef}
-				type="file"
-				accept="image/*"
+				accept={acceptPattern}
 				className="hidden"
 				onChange={(e) => {
 					const file = e.target.files?.[0];
 					if (file && onOpen) onOpen(file);
 					e.target.value = "";
 				}}
+				ref={openInputRef}
+				type="file"
 			/>
 		</div>
 	);

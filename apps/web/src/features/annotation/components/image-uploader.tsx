@@ -5,11 +5,19 @@ import { Button } from "@/components/ui/button";
 import { showError } from "@/lib/error";
 
 export interface ImageUploaderProps {
+	/** Accept pattern for file input (e.g., "image/*,.zip") */
+	acceptPattern: string;
+	/** Function to check if a file is acceptable */
+	isAcceptableFile: (file: File) => boolean;
 	/** Handler for opening an image file */
 	onOpen?: (file: File) => void;
 }
 
-export function ImageUploader({ onOpen }: ImageUploaderProps) {
+export function ImageUploader({
+	acceptPattern,
+	isAcceptableFile,
+	onOpen,
+}: ImageUploaderProps) {
 	const fileInputRef = useRef<HTMLInputElement>(null);
 	const [isDragging, setIsDragging] = useState(false);
 	const dragCounterRef = useRef(0);
@@ -21,14 +29,17 @@ export function ImageUploader({ onOpen }: ImageUploaderProps) {
 			dragCounterRef.current = 0;
 			const file = e.dataTransfer.files[0];
 			if (file) {
-				if (file.type.startsWith("image/")) {
+				if (isAcceptableFile(file)) {
 					onOpen?.(file);
 				} else {
-					showError("Unsupported file type", "Please select an image file");
+					showError(
+						"Unsupported file type",
+						"Please select an image or project file",
+					);
 				}
 			}
 		},
-		[onOpen],
+		[isAcceptableFile, onOpen],
 	);
 
 	const handleDragOver = useCallback((e: React.DragEvent) => {
@@ -134,7 +145,7 @@ export function ImageUploader({ onOpen }: ImageUploaderProps) {
 					<input
 						ref={fileInputRef}
 						type="file"
-						accept="image/*"
+						accept={acceptPattern}
 						className="hidden"
 						onChange={(e) => {
 							const file = e.target.files?.[0];

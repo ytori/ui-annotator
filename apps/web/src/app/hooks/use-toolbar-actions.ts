@@ -19,7 +19,7 @@ import {
 	useAnnotationStore,
 } from "@/features/annotation";
 import { downloadData, type ExportInput } from "@/features/export";
-import { openImageFile, saveProjectFile } from "@/features/storage";
+import { openFile, saveProjectFile } from "@/features/storage";
 import { showError, showSuccess } from "@/lib/error";
 import { toElements } from "@/types";
 
@@ -27,7 +27,7 @@ import { toElements } from "@/types";
  * Hook that integrates toolbar actions from multiple features
  *
  * This hook provides a unified interface for:
- * - Storage operations (Open/Save with PNG embedding)
+ * - Storage operations (Open/Save project files)
  * - Export operations (from export feature)
  *
  * Used to inject handlers into AnnotatorToolbar without the annotation
@@ -52,18 +52,18 @@ export function useToolbarActions() {
 	}, [project, elements]);
 
 	/**
-	 * Handle opening an image file (with or without embedded project data).
+	 * Handle opening an image or project file.
 	 */
 	const handleOpen = useCallback(
 		async (file: File) => {
-			const result = await openImageFile(file);
+			const result = await openFile(file);
 
 			if (!result.success) {
 				showError("Failed to open file", result.error);
 				return;
 			}
 
-			// Load project with its image (both are ready from openImageFile)
+			// Load project with its image (both are ready from openFile)
 			loadProject(result.data.project, result.data.image);
 
 			if (result.data.hasEmbeddedData) {
@@ -74,7 +74,7 @@ export function useToolbarActions() {
 	);
 
 	/**
-	 * Handle saving project to PNG with embedded data.
+	 * Handle saving project to ZIP archive.
 	 * Uses File System Access API for native save dialog when available.
 	 */
 	const handleSave = useCallback(async () => {
@@ -102,7 +102,7 @@ export function useToolbarActions() {
 					types: [
 						{
 							description: "UI Annotator Project",
-							accept: { "image/png": [".png"] },
+							accept: { "application/zip": [".zip"] },
 						},
 					],
 				});
@@ -139,7 +139,7 @@ export function useToolbarActions() {
 	 * Handle exporting for AI (JSON format).
 	 */
 	const handleExport = useCallback(async () => {
-		if (!exportInput || !project) return;
+		if (!(exportInput && project)) return;
 
 		try {
 			await downloadData("json", exportInput);

@@ -12,20 +12,32 @@ import {
 	DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { ImageUploader } from "@/features/annotation";
+import { useFileInputConfig } from "../../hooks/use-file-input-config";
 import { useToolbarActions } from "../../hooks/use-toolbar-actions";
 
 export function WelcomeView() {
 	const { handleOpen } = useToolbarActions();
+	const { acceptPattern, isAcceptableFile } = useFileInputConfig();
 
 	return (
 		<div className="canvas-background relative flex h-full items-center justify-center">
-			<WelcomeMenu onOpen={handleOpen} />
-			<ImageUploader onOpen={handleOpen} />
+			<WelcomeMenu acceptPattern={acceptPattern} onOpen={handleOpen} />
+			<ImageUploader
+				acceptPattern={acceptPattern}
+				isAcceptableFile={isAcceptableFile}
+				onOpen={handleOpen}
+			/>
 		</div>
 	);
 }
 
-function WelcomeMenu({ onOpen }: { onOpen: (file: File) => void }) {
+function WelcomeMenu({
+	acceptPattern,
+	onOpen,
+}: {
+	acceptPattern: string;
+	onOpen: (file: File) => void;
+}) {
 	const fileInputRef = useRef<HTMLInputElement>(null);
 
 	return (
@@ -48,7 +60,7 @@ function WelcomeMenu({ onOpen }: { onOpen: (file: File) => void }) {
 			<input
 				ref={fileInputRef}
 				type="file"
-				accept="image/*"
+				accept={acceptPattern}
 				className="hidden"
 				onChange={(e) => {
 					const file = e.target.files?.[0];

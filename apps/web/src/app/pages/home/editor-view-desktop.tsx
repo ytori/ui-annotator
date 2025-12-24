@@ -20,6 +20,7 @@ import {
 	ComponentsDialog,
 } from "@/features/component-catalog";
 import { ExportDialog } from "@/features/export";
+import { useFileInputConfig } from "../../hooks/use-file-input-config";
 import { useToolbarActions } from "../../hooks/use-toolbar-actions";
 import { AnnotationProvider } from "../../providers/annotation-provider";
 
@@ -28,6 +29,7 @@ export function DesktopEditorView() {
 
 	const selectedIds = useAnnotationStore(selectSelectedIds);
 	const { handleOpen, handleSave, exportInput } = useToolbarActions();
+	const { acceptPattern } = useFileInputConfig();
 
 	// Dialog states
 	const [exportDialogOpen, setExportDialogOpen] = useState(false);
@@ -45,6 +47,7 @@ export function DesktopEditorView() {
 		<AnnotationProvider>
 			<div className="flex h-full flex-col bg-background">
 				<EditorHeader
+					acceptPattern={acceptPattern}
 					onOpen={handleOpen}
 					onSave={handleSave}
 					onExport={handleExport}

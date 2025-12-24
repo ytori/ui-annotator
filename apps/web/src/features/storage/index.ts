@@ -1,7 +1,11 @@
 /**
  * Storage Feature
  *
- * Provides Open/Save functionality with PNG embedding.
+ * Provides Open/Save functionality for project files.
  */
 
-export { openImageFile, saveProjectFile } from "./services/project-storage";
+export {
+	getAcceptPattern,
+	isAcceptableFile,
+} from "./services/codecs";
+export { openFile, saveProjectFile } from "./services/project-storage";

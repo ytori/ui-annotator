@@ -12,6 +12,7 @@ import {
 	ComponentsDialog,
 } from "@/features/component-catalog";
 import { ExportDialog } from "@/features/export";
+import { useFileInputConfig } from "../../hooks/use-file-input-config";
 import { useToolbarActions } from "../../hooks/use-toolbar-actions";
 import { AnnotationProvider } from "../../providers/annotation-provider";
 
@@ -19,6 +20,7 @@ export function MobileEditorView() {
 	useKeyboardShortcuts();
 
 	const { handleOpen, handleSave, exportInput } = useToolbarActions();
+	const { acceptPattern } = useFileInputConfig();
 
 	// Sheet states
 	const [layerSheetOpen, setLayerSheetOpen] = useState(false);
@@ -41,6 +43,7 @@ export function MobileEditorView() {
 			<div className="flex h-full flex-col bg-background">
 				{/* Header */}
 				<EditorHeader
+					acceptPattern={acceptPattern}
 					compact
 					onOpen={handleOpen}
 					onSave={handleSave}
