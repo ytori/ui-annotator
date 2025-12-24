@@ -9,7 +9,7 @@ bun install          # Install dependencies
 bun run dev          # Development server (port 3001)
 bun run build        # Build
 bun run check-types  # Type check
-bun run check        # Biome lint/format
+bun run check        # Ultracite (Biome) lint/format
 bun run knip         # Detect unused code
 ```
 

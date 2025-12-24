@@ -76,6 +76,7 @@ bun run build
 - **Styling:** Tailwind CSS 4
 - **UI Components:** shadcn/ui + Radix UI
 - **Build:** Vite + Bun
+- **Linting/Formatting:** Ultracite (Biome)
 
 ## Project Structure
 
