@@ -129,6 +129,7 @@ export const useAnnotationStore = create<AnnotationStore>()(
             state.selection = initialSelectionState;
             state.viewport = initialViewportState;
             state.drawing = initialDrawingState;
+            state.clipboard = initialClipboardState;
           });
         },
 
