@@ -25,8 +25,6 @@ apps/web/src/
 └── routes/       # TanStack Router
 ```
 
-Details: [docs/architecture.md](docs/architecture.md), [docs/store.md](docs/store.md)
-
 ## Coding Rules
 
 ### Naming Conventions
